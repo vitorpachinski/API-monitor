@@ -5,14 +5,14 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Models\Products;
+use App\Models\Product;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return Products::all();
-        // return response()->json($products);
+        return Product::all();
+        // return response()->json($Product);
     }
 
     public function store(Request $request)
@@ -25,17 +25,17 @@ class ProductController extends Controller
         
         die($request->price);
 
-        Products::create($request->all());
+        Product::create($request->all());
     }
 
     public function show(string $id)
     {
-        return Products::findOrFail($id);
+        return Product::findOrFail($id);
     }
 
     public function update(Request $request, string $id)
     {
-        $product = Products::findOrFail($id);
+        $product = Product::findOrFail($id);
         $product->update($request->all());
     }
 
