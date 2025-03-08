@@ -1,0 +1,73 @@
+services:
+    # image project
+    laravel:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: laravel
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./laravel:/var/www
+        networks:
+            - laravel-network
+
+    # nuxt
+    # node-nuxt:
+    #     image: node:21
+    #     container_name: node-nuxt
+    #     restart: unless-stopped
+    #     ports:
+    #         - '3000:3000'
+    #     working_dir: /var/www
+    #     volumes:
+    #         - ./nuxt:/var/www
+
+    # nginx
+    laravel-nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        container_name: laravel-nginx
+        ports:
+            # laravel port
+            - "8080:80"
+        volumes:
+            - ./docker/nginx/:/etc/nginx/conf.d/
+            - ./laravel/public:/var/www/public
+        networks:
+            - laravel-network
+
+    # db mysql
+    database:
+        image: mysql:8.0
+        container_name: database
+        platform: linux/x86_64
+        restart: always
+        volumes:
+            - ./.docker/mysql/dbdata:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: laravel
+            MYSQL_ROOT_PASSWORD: secret
+        ports:
+            - "3301:3306"
+        networks:
+            - laravel-network
+
+    # PHPMyAdmin
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: phpmyadmin
+        platform: linux/x86_64
+        restart: unless-stopped
+        ports:
+            - "8081:80"
+        environment:
+            PMA_HOST: database
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: secret
+        networks:
+            - laravel-network
+
+networks:
+    laravel-network:
+        driver: bridge
