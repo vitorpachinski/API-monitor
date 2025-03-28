@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
         });
         Schema::table('offers', function (Blueprint $table) {
-            $table->foreignId('product_id')->references('id')->on('products');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
         });
     }
 
@@ -29,9 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('offers', function (Blueprint $table) {
-            $table->dropForeign('offers_product_id_foreign');
-        });
         Schema::dropIfExists('offers');
     }
 };

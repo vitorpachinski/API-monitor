@@ -12,19 +12,24 @@ class ProductController extends Controller
     public function index()
     {
         return Product::all();
-        // return response()->json($Product);
     }
 
     public function store(Request $request)
     {
-        Log::debug($request);
+        $products = Product::all();
+        $code = $request->get('code');
+        
+        if (!empty($products)) {
+            foreach ($products as $product) {
+                if ($product->code == $code) {
+                    return response()->json(['message' => 'Product with the same code already exists'], 409);
+                }
+            }
+        }
 
-        if(str_contains($request->price, ',')){
+        if (str_contains($request->price, ',')) {
             $request->merge(['price' => str_replace(',', '.', $request->price)]);
         }
-        
-        die($request->price);
-
         Product::create($request->all());
     }
 
@@ -38,9 +43,4 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->update($request->all());
     }
-
-    // public function destroy(string $id)
-    // {
-    //     //
-    // }
 }
