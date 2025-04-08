@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
+use ProductService;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Models\Product;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreProductRequest;
 
 class ProductController extends Controller
 {
@@ -14,24 +16,16 @@ class ProductController extends Controller
         return Product::all();
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request, ProductService $service)
     {
-        $products = Product::all();
-        $code = $request->get('code');
-        
-        if (!empty($products)) {
-            foreach ($products as $product) {
-                if ($product->code == $code) {
-                    return response()->json(['message' => 'Product with the same code already exists'], 409);
-                }
-            }
+        try {
+            $product = $service->create($request->all());
+            return response()->json($product, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], $e->getCode());
         }
-
-        if (str_contains($request->price, ',')) {
-            $request->merge(['price' => str_replace(',', '.', $request->price)]);
-        }
-        Product::create($request->all());
     }
+
 
     public function show(string $id)
     {
