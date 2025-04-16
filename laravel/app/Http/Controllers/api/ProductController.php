@@ -16,15 +16,15 @@ class ProductController extends Controller
         return Product::all();
     }
 
-    public function store(StoreProductRequest $request, ProductService $service)
+    public function store(StoreProductRequest $request, Product $product)
     {
-        try {
-            $product = $service->create($request->all());
-            return response()->json($product, 201);
-        } catch (\Exception $e) {
-            return response()->json(['message' => $e->getMessage()], $e->getCode());
-        }
+        \Log::debug($request->validated());
+        die();
+        $newProduct = $product->create($request->validated());
+
+        return response()->json($newProduct, 201);
     }
+
 
 
     public function show(string $id)
