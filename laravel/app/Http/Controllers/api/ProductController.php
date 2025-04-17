@@ -19,7 +19,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request, Product $product)
     {
         \Log::debug($request->validated());
-        die();
         $newProduct = $product->create($request->validated());
 
         return response()->json($newProduct, 201);
