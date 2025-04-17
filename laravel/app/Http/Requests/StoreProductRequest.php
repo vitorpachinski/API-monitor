@@ -28,6 +28,7 @@ class StoreProductRequest extends FormRequest
             'code'  => ['required', 'int', 'unique:products,code'],
             'name'  => ['required', 'string', 'max:255'],
             'price' => ['required', 'numeric'],
+            'offer_price' => ['sometimes', 'numeric'],
             'category_id' => ['required', 'exists:categories,id'],
             'is_offer' => ['sometimes', 'boolean'],
         ];
