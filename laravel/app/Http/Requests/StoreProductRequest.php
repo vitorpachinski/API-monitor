@@ -25,6 +25,9 @@ class StoreProductRequest extends FormRequest
         return [
             'code'  => ['required', 'string', 'unique:products,code'],
             'name'  => ['required', 'string', 'max:255'],
-            'price' => ['required', 'numeric'],        ];
+            'price' => ['required', 'numeric'],
+            'category_id' => ['required', 'exists:categories,id'],
+            'is_offer' => ['sometimes', 'boolean'],
+        ];
     }
 }
