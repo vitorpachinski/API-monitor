@@ -5,6 +5,8 @@ namespace App\Providers;
 use EloquentProductRepository;
 use ProductRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Product;
+use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +26,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        Route::bind('product', function ($value) {
+            return Product::where('code', $value)
+                ->firstOrFail();
+        });
     }
 }
